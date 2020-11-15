@@ -42,11 +42,8 @@ const updateUser = (req, res) => {
   }
   const body = req.body;
   const index = findIndex(data, hash)
-  if( index >= 0) {
-    let updatedUser ={ ...data[index], ...body};
-    console.log('updatedUser', updatedUser);
-    return res.status(404).json({ hash: updatedUser.hash })
-  } return { message: 'User not found' }
+  let updatedUser ={ ...data[index], ...body};
+  res.status(404).json({ hash: updatedUser.hash })
 }
 
 router.put('/:hash', ([checkEmptyBody, updateUser]));
@@ -56,7 +53,6 @@ const deleteUser = (req, res) => {
   const index = findIndex(data, hash);
   if (index < 0) return res.status(404).json({ message: 'User not found'})
   data = data.filter(item => item.hash !== hash);
-  console.log('data', data)
   res.json({ hash })
 }
 

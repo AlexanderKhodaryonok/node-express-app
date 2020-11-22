@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon ./index.mjs"
+    "start": "nodemon -r dotenv/config ./index.js"
   },
   "license": "MIT",
   "devDependencies": {
+    "dotenv": "^8.2.0",
     "nodemon": "^1.19.1"
   },
   "dependencies": {

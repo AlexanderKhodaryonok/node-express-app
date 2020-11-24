@@ -13,7 +13,12 @@ const logger = createLogger({
   transports: [
     new transports.File({
       filename: 'logs/combined.log',
-      level: 'debug',
+      level: 'info',
+      format: json(),
+    }),
+    new transports.File({
+      filename: 'logs/errors.log',
+      level: 'error',
       format: json(),
     }),
   ]

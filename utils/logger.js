@@ -25,4 +25,12 @@ if (process.env.NODE_ENV !== 'production') {
   }));
 }
 
+if (process.env.NODE_ENV === 'test') {
+  const errorsLogger = logger.transports.find(transport => {
+    return transport.level === 'error'
+  });
+  
+  logger.remove(errorsLogger);
+}
+
 module.exports = logger;

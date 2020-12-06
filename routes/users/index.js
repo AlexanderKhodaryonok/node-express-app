@@ -1,19 +1,24 @@
 const express =  require('express');
 let data =  require('../../data');
 const { getPaginatedUsers, generateId, checkEmptyBody, findIndex, findItem } = require('../../utils');
+const { NotFoundError }  = require("../../customErrors");
 
 const router = express.Router();
 
 router.get('/:limit/:page', (req, res) => {
-  const { limit = 10, page = 1 } = req.params;
+  try {
+    const { limit = 10, page = 1 } = req.params;
   if (limit > 15) {
     return res.status(400).json({message: 'Incorrect payload'});
   }
   const users = getPaginatedUsers(limit, page, data);
   if (!users.length) {
-    return res.json({message: 'Users not found'});
+    throw new NotFoundError('User not found', 404);
   }
   res.json(users);
+  } catch (error) {
+    return res.status(error.statusCode).json({ message: error.message });
+  }
 });
 
 router.get('/:hash', (req, res) => {
@@ -48,14 +53,18 @@ const updateUser = (req, res) => {
 
 router.put('/:hash', ([checkEmptyBody, updateUser]));
 
-const deleteUser = (req, res) => {
-  const { hash } = req.params;
-  const index = findIndex(data, hash);
-  if (index < 0) return res.status(404).json({ message: 'User not found'})
-  data = data.filter(item => item.hash !== hash);
-  res.json({ hash })
-}
-
-router.delete('/:hash', ([deleteUser]));
+router.delete("/:hash", (req, res) => {
+  try {
+    const { hash } = req.params;
+    const index = findIndex(data, hash);
+    if (index < 0) {
+      throw new NotFoundError("User not found", 404);
+    }
+    data = data.filter((item) => item.hash !== hash);
+    res.json({ hash });
+  } catch (error) {
+    return res.status(error.statusCode).json({ message: error.message });
+  }
+});
 
 module.exports = router;

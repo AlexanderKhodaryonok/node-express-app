@@ -25,7 +25,6 @@ class AuthError extends Error {
       this.name = 'AuthError';
       this.statusCode = args[1] || 401;
       this.code = args[2] || 1;
-      this.message = 'You are not authenticated';
   }
 };
 

@@ -22,15 +22,16 @@ router.get("/", (req, res) => {
 router.get("/auth/login", (req, res) => {
   try {
     const { email, password } = req.query;
-    console.log(email, password);
-    if (!password || !email) {
-      throw new AuthError()
+    if (!password.trim() || !email.trim()) {
+      throw new AuthError("Email or password is null");
     }
     if (password === process.env.PASSWORD) {
       res.cookie("email", email);
       res.status(200).send(`
         <div>Hello</div>
       `);
+    } else {
+      throw new AuthError("Invalid email or password");
     }
   } catch (error) {
     res.status(error.statusCode).json(error.message);

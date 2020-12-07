@@ -1,6 +1,8 @@
 const express = require("express");
 const session = require('express-session');
-var cookieParser = require('cookie-parser');
+const JwtStrategy = require('passport-jwt').Strategy;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
+// var cookieParser = require('cookie-parser');
 const userRoutes = require("./routes/users");
 const authRoutes = require("./routes/auth");
 const { PORT } = require("./config");
@@ -9,7 +11,7 @@ const { NotFoundError }  = require("./customErrors");
 
 const app = express();
 
-app.use(cookieParser())
+// app.use(cookieParser())
 app.use(session(SESSION_OPTIONS));
 app.use(express.json());
 app.use(loggerMiddleware);

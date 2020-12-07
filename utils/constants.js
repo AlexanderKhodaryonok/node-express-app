@@ -10,4 +10,10 @@ const SESSION_OPTIONS = {
   },
 };
 
-module.exports = { SESSION_OPTIONS };
+const JWT_CODE = 'code';
+
+const JWT_SIGN_OPTIONS = { expiresIn: '30m' };
+
+const JWT_VERIFY_OPTIONS = { ignoreExpiration: false };
+
+module.exports = { SESSION_OPTIONS, JWT_CODE, JWT_SIGN_OPTIONS, JWT_VERIFY_OPTIONS, };

@@ -1,11 +1,12 @@
 const express =  require('express');
 let data =  require('../../data');
-const { getPaginatedUsers, generateId, checkEmptyBody, findIndex, findItem, authenticate } = require('../../utils');
+const { getPaginatedUsers, generateId, checkEmptyBody, findIndex, findItem, authenticate, authenticateJWT } = require('../../utils');
 const { NotFoundError }  = require("../../customErrors");
 
 const router = express.Router();
 
-router.use(([authenticate]));
+// router.use(([authenticate]));
+router.use(([authenticateJWT]));
 
 router.get('/:limit/:page', (req, res) => {
   try {

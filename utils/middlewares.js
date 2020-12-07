@@ -1,5 +1,7 @@
+const jwt = require('jsonwebtoken');
 const logger = require('./logger');
-const { ValidationError }  = require("../customErrors");
+const { JWT_CODE } = require('./constants');
+const { ValidationError, AuthError }  = require("../customErrors");
 
 const loggerMiddleware = (req, _res, next) => {
   logger.info({ payload: req.body, method: req.method, timestamp: new Date() });
@@ -24,4 +26,22 @@ const authenticate = (req, res, next) => {
   }
 };
 
-module.exports = { loggerMiddleware, errorHandler, authenticate };
+const authenticateJWT = (req, res, next) => {
+  try {
+    const token = req.get('X-auth');
+    jwt.verify(token, JWT_CODE, (error, data) => {
+      if(error) {
+        console.log('data', data)
+        console.log('error', error)
+        throw new AuthError('Invalid token');
+      } else {
+        console.log('data', data)
+        return next();
+      }
+    })
+  } catch (error) {
+    return res.status(error.statusCode).json({ message: error.message });
+  }
+};
+
+module.exports = { loggerMiddleware, errorHandler, authenticate, authenticateJWT };

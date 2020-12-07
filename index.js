@@ -1,20 +1,21 @@
 const express = require("express");
+const session = require('express-session');
+var cookieParser = require('cookie-parser');
 const userRoutes = require("./routes/users");
 const authRoutes = require("./routes/auth");
 const { PORT } = require("./config");
-const { loggerMiddleware, errorHandler } = require("./utils/middlewares");
+const { loggerMiddleware, errorHandler, SESSION_OPTIONS } = require("./utils");
 const { NotFoundError }  = require("./customErrors");
-
-const port = PORT || 3000;
 
 const app = express();
 
+app.use(cookieParser())
+app.use(session(SESSION_OPTIONS));
 app.use(express.json());
-
 app.use(loggerMiddleware);
 
 app.use("/users", userRoutes);
-app.use("/login", authRoutes);
+app.use("/", authRoutes);
 
 app.use([errorHandler]);
 
@@ -25,6 +26,8 @@ app.use('*', ({ method, baseUrl}, res, next) => {
     return res.status(error.statusCode).json({ message: error.message });
   };
 });
+
+const port = PORT || 3000;
 
 app.listen(port, () => {
   console.log(`Server API was started! Reserved port is ${port}`);

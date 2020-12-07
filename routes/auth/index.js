@@ -1,16 +1,39 @@
 const express = require("express");
-const { PASSWORD } = require("../../config");
-const { validatePassword }  = require("./middlewares");
+const { AuthError } = require("../../customErrors");
 
 const router = express.Router();
 
-router.use(([validatePassword]));
+router.get("/", (req, res) => {
+  const { name } = req.query;
 
-router.post("/", (_req, res) => {
+  req.session.user = { name };
+
+  res.setHeader("content-type", "text/html");
+  res.status(200).send(`
+      <form action="/auth/login">
+        <div>Login</div>
+        <input name="email" type="text"></input>
+        <input name="password" type="text"></input>
+        <button type='submit'>Login</button>
+      </form>
+  `);
+});
+
+router.get("/auth/login", (req, res) => {
   try {
-    res.json({ message: "OK" });
+    const { email, password } = req.query;
+    console.log(email, password);
+    if (!password || !email) {
+      throw new AuthError()
+    }
+    if (password === process.env.PASSWORD) {
+      res.cookie("email", email);
+      res.status(200).send(`
+        <div>Hello</div>
+      `);
+    }
   } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
+    res.status(error.statusCode).json(error.message);
   }
 });
 
